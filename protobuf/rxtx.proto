@@ -1,0 +1,177 @@
+syntax = "proto3";
+//
+// Copyright 2020 Telenor Digital AS
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+package rxtx;
+// A note on nomenclature:
+// The client runs as a listener on one or more protocols at the edge of the
+// system. They listen on data from devices in the telco network. The devices
+// might have overlapping IP addresses so each listener could potentially
+// route data to devices differently.
+//
+// The upstream service is hosted by Horde, either a single service or a cluster
+// of services.
+//
+
+// Origin is the source of the request. The APN ID is enough to identify
+// a single device based on its IP address. Right now there's no APN that
+// supports overlapping IP addresses and there will probably be IPv6 support
+// before telco networks supports overlapping IP addresses. I might be wrong.
+// And I might regret this later. If additional identifiers are required they
+// can be added in this struct without changing the original structure.
+// F.e. if the APN/NAS ipsec tunnel is split into two or three and each serves
+// a separate range in the subnet:
+// 10.0.0.0/13 is split into
+//    - 10.0.0.0/15
+//    - 10.2.0.0/15
+//    - 10.4.0.0/15
+//    - 10.6.0.0/15
+// ..we can add a cidr parameter to the origin to filter even more data.
+//
+
+// Message types. CoAPPull is device-initated downstream messages, CoAP push is
+// horde-initiated downstream messages and CoAP upstream is general CoAP
+// upstream messages. Technically they're CoAP pull messages but it makes it
+// easier to follow the logic when there's three kinds of coap messages.
+// The UDP messages goes both ways; context determines wether it's upstream
+// or downstream.
+enum MessageType {
+  UDP = 0;
+  CoAPUpstream = 1;
+  CoAPPull = 2;
+  CoAPPush = 3;
+  UDPPull = 4;
+}
+
+message UDPOptions {};
+
+message CoAPOptions {
+  int32 code = 1;                    // Code (GET, PUT, POST, DELETE)
+  int32 type = 2;                    // Message type (confirmed, unconfirmed)
+  repeated string location_path = 3; // CoAP location path (8)
+  string path = 4;                   // CoAP path option (11)
+  int32 content_format = 5;          // CoAP content format (12)
+  repeated string uri_query = 6;     // This is the URI query option (15)
+  int32 accept = 7;                  // Accept option (17)
+  int64 token = 9;                   // CoAP token
+  int32 timeout_seconds = 10;        // Timeout for exchange
+};
+
+message Message {
+  int64 id = 1;             // This is the message ID
+  MessageType type = 2;     // This is the type of message
+  int64 timestamp = 3;      // This is the local time stamp of the message
+  bytes remote_address = 4; // The address which the message was sent from
+  int32 remote_port = 5;    // The remote port used when sending the message
+  int32 local_port = 6;     // The local port
+  bytes payload = 7;        // Message payload
+  CoAPOptions coap = 8;     // CoAP metadata
+  UDPOptions udp = 9;       // UDP metadata
+}
+
+// Origin tells the server where the request has originated. The APN ID must be
+// set. The NAS ID is optional and can be set to -1 if it does not apply. If the
+// listener is capable of routing messages to the entire APN the NAS ID can be
+// omitted.
+message Origin {
+  int32 apn_id = 1;
+  repeated int32 nas_id = 2;
+}
+
+// The upstream request is sent by the listener when upstream data (or a request
+// is received)
+message UpstreamRequest {
+  Origin origin = 1;
+  bool redelivery = 2;
+  Message msg = 5;
+  bool expect_downstream = 6;
+};
+
+//
+message DownstreamResponse { Message msg = 2; }
+
+// DownstreamRequest polls for
+message DownstreamRequest {
+  Origin origin = 1;
+  MessageType type = 2;
+};
+
+enum ErrorCode {
+  SUCCESS = 0;      // Success sending
+  TOO_LARGE = 1;    // Payload too large
+  NETWORK = 2;      // Network error
+  NOT_HANDLED = 3;  // Not handled for other reasons, resend later
+  CLIENT_ERROR = 4; // Client returned an error
+  PARAMETER = 5;    // Parameter error
+  INTERNAL = 6;     // Internal error
+  PENDING = 7;      // Result is pending
+  TIMEOUT = 8;      // Timeout waiting
+};
+
+// The AckRequest message is sent by the listener to the upstream server to ack
+// or report errors. A missing result field is interpreted as success.
+message AckRequest {
+  int64 message_id = 1;
+  ErrorCode Result = 2;
+  int64 coap_token = 3;
+};
+
+// The AckResponse is sent back to the listener.
+message AckResponse {
+  // Empty
+};
+
+// The Rxtx service handles the UDP, CoAP and other listeners running on the
+// APN side. There are separate methods for UDP and CoAP, mainly because the
+// CoAP exchanges make the rest a lot simpler
+service Rxtx {
+  // PutMessage sends an upstream message. The service assumes responsibility
+  // for the message when a response is sent.
+  rpc PutMessage(UpstreamRequest) returns (DownstreamResponse);
+
+  // GetMessage returns an downstream/outbound (unsolicited) message to a
+  // device.
+  rpc GetMessage(DownstreamRequest) returns (DownstreamResponse);
+
+  // Ack acknowledges receipt and status of a message. If there's an error
+  // handling the message the Result field in the request contains the error.
+  rpc Ack(AckRequest) returns (AckResponse);
+};
+
+// AccessRequest is sent from the gRPC-backed RADIUS server to check if
+// devices should be allowed to connect.
+message AccessRequest {
+  int64 imsi = 1;
+  string nas_identifier = 2;
+  string username = 3;
+  bytes password = 4;
+  bytes user_location_info = 5;
+  string imsi_mcc_mnc = 6;
+  bytes ms_timezone = 7;
+  string imeisv = 8;
+  bytes nas_ip_address = 9;
+};
+
+// AccessResponse is the response to the gRPC-backed RADIUS server.
+message AccessResponse {
+  bool accepted = 1;
+  bytes ip_address = 2;
+  string message = 3;
+};
+
+// The RADIUS service is a relatively thin wrapper over the RADIUS requests
+// arriving on the device side.
+service RADIUS { rpc Access(AccessRequest) returns (AccessResponse); }

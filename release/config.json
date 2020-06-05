@@ -1,0 +1,122 @@
+{
+  "sourceRoot": ".",
+  "name": "horde",
+  "committerEmail": "stalehd@telenordigital.com",
+  "committerName": "Staale H Dahl",
+  "targets": [
+    "amd64-darwin",
+    "amd64-linux"
+  ],
+  "files": [
+    {
+      "id": "core",
+      "name": "bin/horde.darwin",
+      "target": "amd64-darwin"
+    },
+    {
+      "id": "udp",
+      "name": "bin/horde-udp.darwin",
+      "target": "amd64-darwin"
+    },
+    {
+      "id": "radius",
+      "name": "bin/horde-radius.darwin",
+      "target": "amd64-darwin"
+    },
+    {
+      "id": "coap",
+      "name": "bin/horde-coap.darwin",
+      "target": "amd64-darwin"
+    },
+    {
+      "id": "magpie",
+      "name": "bin/magpie.darwin",
+      "target": "amd64-darwin"
+    },
+    {
+      "id": "ctrlh",
+      "name": "bin/ctrlh.darwin",
+      "target": "amd64-darwin"
+    },
+    {
+      "id": "radiustest",
+      "name": "bin/radiustest.darwin",
+      "target": "amd64-darwin"
+    },
+    {
+      "id": "inputtest",
+      "name": "bin/inputtest.darwin",
+      "target": "amd64-darwin"
+    },
+    {
+      "id": "fotaclient",
+      "name": "bin/fotaclient.darwin",
+      "target": "amd64-darwin"
+    },
+    {
+      "id": "mreceiver",
+      "name": "bin/messagereceiver.darwin",
+      "target": "amd64-darwin"
+    },
+    {
+      "id": "core",
+      "name": "bin/horde.linux",
+      "target": "amd64-linux"
+    },
+    {
+      "id": "udp",
+      "name": "bin/horde-udp.linux",
+      "target": "amd64-linux"
+    },
+    {
+      "id": "radius",
+      "name": "bin/horde-radius.linux",
+      "target": "amd64-linux"
+    },
+    {
+      "id": "coap",
+      "name": "bin/horde-coap.linux",
+      "target": "amd64-linux"
+    },
+    {
+      "id": "magpie",
+      "name": "bin/magpie.linux",
+      "target": "amd64-linux"
+    },
+    {
+      "id": "ctrlh",
+      "name": "bin/ctrlh.linux",
+      "target": "amd64-linux"
+    },
+    {
+      "id": "radiustest",
+      "name": "bin/radiustest.linux",
+      "target": "amd64-linux"
+    },
+    {
+      "id": "inputtest",
+      "name": "bin/inputtest.linux",
+      "target": "amd64-linux"
+    },
+    {
+      "id": "fotaclient",
+      "name": "bin/fotaclient.linux",
+      "target": "amd64-linux"
+    },
+    {
+      "id": "mreceiver",
+      "name": "bin/messagereceiver.linux",
+      "target": "amd64-linux"
+    }
+  ],
+  "templates": [
+    {
+      "name": "changelog.md",
+      "action": "concatenate"
+    },
+    {
+      "name": "update.sql",
+      "action": "include"
+    }
+  ]
+}

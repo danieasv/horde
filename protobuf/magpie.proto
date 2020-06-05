@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+//
+// Copyright 2020 Telenor Digital AS
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+package datastore;
+
+// DataMessage is both the input and the output from the data store. The
+// sequence numbers aren't message identifiers. They are just counters for
+// messages to keep track of acknowledgements.
+message DataMessage {
+  int64 sequence = 1; // Message sequence number. Not an identifier but just a
+                      // sequence number assigned by the sender.
+  string collectionId = 2; // Collection identifier
+  string deviceId = 3;     // Device identifier
+  int64 created = 4;  // Timestamp (in ns) for data creation. Set by client.
+  bytes metadata = 5; // Message metadata
+  bytes payload = 6;  // Binary payload
+}
+
+// DataFilter is the filtering parameters for data. collectionId is
+message DataFilter {
+  string collectionId = 1; // Collection identifier (required)
+  string deviceId = 2;     // Device identifer (blank = ignore)
+  int64 from = 3;          // Time interval start (<=0 = ignore)
+  int64 to = 4;            // Time interval stop (<=0 = ignore)
+  int32 limit = 5;         // Limit number of returned elements
+}
+
+// Receipt messages are sent by the data store to acknowledge receiption of
+// messages.
+message Receipt { int64 sequence = 1; }
+
+message DataMetrics {
+  string collectionId = 1;  // Collection identifier
+  string deviceId = 2;      // Device identifier
+  int64 messageCount = 3;   // Number of data messages found
+  int64 firstDataPoint = 4; // Time for first data message
+  int64 lastDataPoint = 5;  // Time for last data message
+}
+// DataStore is the main data store service. This does not include an
+// administration API.
+service DataStore {
+  // PutData stores messages. Messages are acknowledged when they are written
+  // to the underlying data store (whatever that may be).
+  rpc PutData(stream DataMessage) returns (stream Receipt);
+
+  // GetData returns data from either a collection (if just collection ID is
+  // specified) or a particular device (if both collection ID and device ID is
+  // supplied)
+  rpc GetData(DataFilter) returns (stream DataMessage);
+  // GetDataMetrics returns metrics on data stored. Filtering works similar to
+  // the GetData method
+  rpc GetDataMetrics(DataFilter) returns (DataMetrics);
+
+  // StoreData is a simpler version of the PutData interface. It's not as
+  // performant but easier to implement.
+  rpc StoreData(DataMessage) returns (Receipt);
+}

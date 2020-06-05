@@ -1,0 +1,111 @@
+# docker-compose for Horde, listeners, datastore, database
+#
+#
+version: '3'
+
+services:
+  # This is the core service. It uses the PostgreSQL database in the stakc to
+  # store data. Data will get lost when the image is recreated!
+  core:
+    image: horde-core:${VERSION}
+    ports:
+      - "8080:8080/tcp"
+      - "10001:10001/tcp"
+      - "12000:12000/tcp"
+      - "11812:11812/tcp"
+      - "1234:1234/tcp"
+      - "15000:15000/tcp"
+    depends_on:
+      - db
+    links:
+      - datastore
+      - db
+    environment:
+      DATASTORE_ENDPOINT: datastore:12002
+      DB_TYPE: postgres
+      DB_CONNECTION_STRING: postgres://postgres:dbpass@db/postgres?sslmode=disable
+      MANAGEMENT_ENDPOINT: :1234
+      RADIUS_GRPC_ENDPOINT: 0.0.0.0:11812
+      RXTX_GRPC_ENDPOINT: 0.0.0.0:15000
+    restart: always
+
+  udp:
+    image: horde-udp:${VERSION}
+    ports:
+      - "31415:31415/udp"
+      - "1234:1234/udp"
+      - "6000:6000/udp"
+      - "7000:7000/udp"
+      - "8000:8000/udp"
+      - "9000:9000/udp"
+    depends_on:
+      - core
+    links:
+      - core
+    environment:
+      RXTX_GRPC_ENDPOINT: core:15000
+
+  coap:
+    image: horde-coap:${VERSION}
+    ports:
+      - "5683:5683/udp"
+    depends_on:
+      - core
+    links:
+      - core
+    environment:
+      RXTX_GRPC_ENDPOINT: core:15000
+
+  horde_radius:
+    image: horde-radius:${VERSION}
+    ports:
+      - "1812:1812/udp"
+    depends_on:
+      - core
+    environment:
+      HORDE_RADIUS_ENDPOINT: core:11812
+
+  # This is the Magpie data store. It uses the PostgreSQL database in the stakc to
+  # store data. Data will get lost when the image is recreated!
+  datastore:
+    image: horde-datastore:${VERSION}
+    links:
+      - db
+    depends_on:
+      - db
+    ports:
+      - "10003:10003/tcp"
+      - "12002:12002/tcp"
+    environment:
+      DB_TYPE: postgres
+      DB_CONNECTION_STRING: postgres://postgres:dbpass@db/postgres?sslmode=disable
+    restart: always
+
+  # This is the container that acts as a device. Ideally we'd want this on the
+  # outside but docker networks aren't really made for talking to the host (it's
+  # supposed to be the other way round)
+  messagereceiver:
+    image: horde-messagereceiver:${VERSION}
+    ports:
+      - "4711:4711/udp"
+      - "4712:4712/udp"
+      - "8282:8282/tcp"
+    links:
+      - udp
+      - coap
+    environment:
+      UPSTREAM_UDP: udp:31415
+      UPSTREAM_COAP: coap:5683
+
+  # This is the PostgreSQL database. Nothing fancy here, just using the latest. The
+  # database is not a separate volume so it is more or less ephemeral when the image
+  # is removed.
+  db:
+    # Set labels so that this image will be pruned with the other images
+    labels:
+      - "Type=Horde"
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: dbpass

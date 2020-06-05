@@ -1,0 +1,212 @@
+syntax = "proto3";
+
+//
+// Copyright 2020 Telenor Digital AS
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+package managementproto;
+
+// ManagementService is the service interface for the Horde management
+// interface.
+//
+service HordeManagementService {
+  // APN management. APNs are set up once and are immutable so there's only
+  // add and remove methods for these.
+
+  // AddAPN creates a new APN. One or more NASRange elements must be supplied.
+  rpc AddAPN(AddAPNRequest) returns (AddAPNResponse);
+
+  // AddAllocation allocates a new IP address for an APN. This is for
+  // debugging and diagnostics; usually this is done through the RADISU service.
+  rpc AddAllocation(AddAllocationRequest) returns (AddAllocationResponse);
+
+  // RemoveAPN removes an APN. The APN must not contain any allocations or
+  // NAS CIDRs when it is deleted. ListAPNAllocations and RemoveAPNAllocation
+  // must be used to remove allocations. This might seem cumbersome but it
+  // might prevent the operators doing something *really* stupid.
+  rpc RemoveAPN(RemoveAPNRequest) returns (RemoveAPNResponse);
+
+  // ReloadAPN reloads the APN and NAS list in memory
+  rpc ReloadAPN(ReloadAPNRequest) returns (ReloadAPNResponse);
+
+  // AddNAS adds a NAS CIDR to the APN
+  rpc AddNAS(AddNASRequest) returns (AddNASResponse);
+
+  //  RemoveNAS removes a NAS CIDR from an APN. The NAS CIDR cannot contain any
+  // allocations.
+  rpc RemoveNAS(RemoveNASRequest) returns (RemoveNASResponse);
+
+  // ListAPNAllocations lists all allocations for a particular APN. The first
+  // 1000 allocations for that APN is included.
+  rpc ListAPNAllocations(ListAPNAllocationsRequest)
+      returns (ListAPNAllocationsResponse);
+
+  // RemoveAPNAllocation removes a single allocation from the APN. The total
+  // number of allocations might be in the millions. This might seem
+  // cumbersome but it's clunky for a reason. If you try to remove an APN
+  // with millions of devices and the APN is still in use you'll be fighting
+  // an uphill battle which is *exactly* what you want in that case :)
+  rpc RemoveAPNAllocation(RemoveAPNAllocationRequest)
+      returns (RemoveAPNAllocationResponse);
+
+  // ListAPN lists the configured APNs
+  rpc ListAPN(ListAPNRequest) returns (ListAPNResponse);
+
+  // AddUser creates a new user in the backend store. This is mostly for
+  // M2M users where there's no human on the other side, typically major
+  // integrations with Horde. This user can not log in via the regular
+  // authentication methods.
+  rpc AddUser(AddUserRequest) returns (AddUserResponse);
+
+  // AddToken adds a new API token to a user created with AddUser. This method
+  // will not work with users created through the usual authentication methods.
+  rpc AddToken(AddTokenRequest) returns (AddTokenResponse);
+
+  // RemoveToken removes a token from an internal user created with AddUser.
+  // Used in combination with AddToken this can be used to rotate API tokens
+  // for M2M users.
+  rpc RemoveToken(RemoveTokenRequest) returns (RemoveTokenResponse);
+};
+
+// Result is included in the response messages to indicate success/failure.
+// the Result message will always be set but the actual values might be
+// invalid.
+message Result {
+  bool Success = 1;
+  string Error = 2;
+};
+
+message APN {
+  int32 ApnID = 1;
+  string Name = 2;
+};
+
+// NASRange represents a single Network Authentication Server that emits
+// RADIUS requests. Each server expects a particular range.
+message NASRange {
+  int32 NasID = 1;
+  string NasIdentifier = 2;
+  string CIDR = 3;
+};
+
+// APNConfig is configuration for an entire APN.
+message APNConfig {
+  APN APN = 1;
+  repeated NASRange NasRanges = 3;
+};
+
+message APNAllocation {
+  int32 NasID = 1;
+  int64 IMSI = 2;
+  int64 IMEI = 3;
+  string IP = 4;
+  int64 Created = 5;
+};
+
+// AddAPNRequest is the request object when creating a new APN.
+message AddAPNRequest { APN NewAPN = 1; };
+
+// AddAPNResponse is the response sent when a new APN is created.
+message AddAPNResponse { Result Result = 1; };
+
+// RemoveAPNRequest is the request object for the RemoveAPN method.
+message RemoveAPNRequest { int32 ApnID = 1; };
+
+// RemoveAPNResponse is the response object for the RemoveAPN method.
+message RemoveAPNResponse { Result Result = 1; };
+
+// ListAPNRequest is the request object for the ListAPN method.
+message ListAPNRequest {};
+
+// ListAPNResponse is the response object for the ListAPN method.
+message ListAPNResponse {
+  Result Result = 1;
+  repeated APNConfig APNs = 2;
+};
+
+// ReloadAPNRequest is the request object for the ReloadAPN method
+message ReloadAPNRequest {};
+
+// ReloadAPNResponse is the response object for the ReloadAPN method
+message ReloadAPNResponse { Result Result = 1; };
+
+message AddNASRequest {
+  int32 ApnID = 1;
+  NASRange NewRange = 2;
+};
+
+message AddNASResponse { Result Result = 1; };
+
+message AddAllocationRequest {
+  int32 ApnID = 1;
+  int32 NasID = 2;
+  int64 IMSI = 3;
+  string IP = 4;
+};
+
+message AddAllocationResponse { Result Result = 1; }
+
+message RemoveNASRequest {
+  int32 ApnID = 1;
+  int32 NasID = 2;
+};
+
+message RemoveNASResponse { Result Result = 1; }
+
+message ListAPNAllocationsRequest {
+  int32 ApnID = 1;
+  int32 NasID = 2;
+};
+
+message ListAPNAllocationsResponse {
+  Result Result = 1;
+  repeated APNAllocation Allocations = 2;
+};
+
+message RemoveAPNAllocationRequest {
+  // APN ID is required and must be set.
+  int32 ApnID = 1;
+  // NasID is required  and must be set.
+  int32 NasID = 2;
+  // IMSI field is required and must be set.
+  int64 IMSI = 3;
+};
+
+message RemoveAPNAllocationResponse { Result Result = 1; };
+
+message AddUserRequest {
+  string Name = 1;
+  string Email = 2;
+};
+
+message AddUserResponse {
+  Result Result = 1;
+  string UserId = 2;
+  string ApiToken = 3;
+};
+
+message AddTokenRequest { string UserId = 1; };
+
+message AddTokenResponse {
+  Result Result = 1;
+  string ApiToken = 2;
+};
+
+message RemoveTokenRequest {
+  string UserId = 1;
+  string ApiToken = 2;
+};
+
+message RemoveTokenResponse { Result Result = 1; };
