@@ -111,9 +111,13 @@ func NewDeviceFromModel(d model.Device, c model.Collection) *apipb.Device {
 
 // NewNetworkMetadataFromModel converts model.DeviceNetworkMetadata into apipb.NetworkMetadata
 func NewNetworkMetadataFromModel(m model.DeviceNetworkMetadata, fieldMask model.FieldMask) *apipb.NetworkMetadata {
+	allocTime := timeToMillis(m.AllocatedAt)
+	if allocTime < 0 {
+		allocTime = 0
+	}
 	ret := &apipb.NetworkMetadata{
 		AllocatedIp: &wrappers.StringValue{Value: m.AllocatedIP},
-		AllocatedAt: &wrappers.Int64Value{Value: m.AllocatedAt.UnixNano() / int64(time.Millisecond)},
+		AllocatedAt: &wrappers.Int64Value{Value: allocTime},
 		CellId:      &wrappers.Int64Value{Value: m.CellID},
 	}
 	if fieldMask.IsSet(model.LocationMask) {
@@ -400,6 +404,7 @@ func NewMemberFromModel(teamID model.TeamKey, member model.Member) *apipb.Member
 
 // TimeToMillis converts a time value into milliseconds
 func timeToMillis(t time.Time) int64 {
+	logging.Debug("Time = %d, convert to %d", t.UnixNano(), t.UnixNano()/int64(time.Millisecond))
 	return t.UnixNano() / int64(time.Millisecond)
 }
 func milliToNano(ms int64) int64 {
@@ -544,7 +549,7 @@ func NewOutputDataMessageFromModel(msg model.DataMessage, collection model.Colle
 		Type:         apipb.OutputDataMessage_data,
 		Device:       NewDeviceFromModel(msg.Device, collection),
 		Payload:      msg.Payload,
-		Received:     &wrappers.Int32Value{Value: int32(timeToMillis(msg.Received))},
+		Received:     &wrappers.Int64Value{Value: timeToMillis(msg.Received)},
 		Transport:    transportType,
 		CoapMetaData: coapMetadata,
 		UdpMetaData:  udpMetadata,

@@ -75,7 +75,7 @@ func TestBackwardsCompatibleMarshal(t *testing.T) {
 
 	fieldMask := model.FieldMask(0)
 
-	n, err := UnmarshalDataStoreMetadata(buf, fieldMask, []byte("Hello there"), 4711)
+	n, err := UnmarshalDataStoreMetadata(buf, fieldMask, []byte("Hello there"), 4711000000)
 	assert.NoError(err)
 
 	// Replace payload and received

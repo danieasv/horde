@@ -19,6 +19,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"strings"
+	"time"
 
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/ptypes/wrappers"
@@ -128,6 +129,6 @@ func UnmarshalDataStoreMetadata(metadata []byte, fieldMask model.FieldMask, payl
 	}
 	applyFieldMask(ret.Device, fieldMask)
 	ret.Payload = payload
-	ret.Received = &wrappers.Int32Value{Value: int32(created)}
+	ret.Received = &wrappers.Int64Value{Value: created / int64(time.Millisecond)}
 	return ret, nil
 }

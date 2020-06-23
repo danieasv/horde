@@ -23,14 +23,17 @@ require (
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible
 	github.com/nsf/termbox-go v0.0.0-20200418040025-38ba6e5628f1 // indirect
 	github.com/prometheus/client_golang v1.6.0
+	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.6.0
-	github.com/telenordigital/nbiot-go v0.0.0-20200302150853-aec59ff03970
+	github.com/telenordigital/nbiot-go v0.6.0
 	golang.org/x/crypto v0.0.0-20200604202706-70a84ac30bf9
 	golang.org/x/sys v0.0.0-20200602225109-6fdc65e7d980
 	golang.org/x/text v0.3.2 // indirect
 	google.golang.org/genproto v0.0.0-20200604104852-0b0486081ffb
 	google.golang.org/grpc v1.29.1
+	google.golang.org/protobuf v1.24.0
 	layeh.com/radius v0.0.0-20190322222518-890bc1058917
 )
 
 //replace github.com/go-ocf/go-coap v0.0.0-20191205091034-1fba24d18397 => ../go-ocf-local
+//replace github.com/telenordigital/nbiot-go v0.0.0-20200302150853-aec59ff03970 => ../nbiot-go

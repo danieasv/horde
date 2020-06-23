@@ -184,6 +184,7 @@ func (r *RxTxReceiver) PutMessage(ctx context.Context, req *rxtx.UpstreamRequest
 			ip.String(), req.Origin.ApnId, nas.ID, device.IMSI,
 			device.Network.AllocatedIP, device.Network.ApnID, device.Network.NasID)
 		device.Network.AllocatedIP = ip.String()
+		device.Network.AllocatedAt = time.Now()
 		device.Network.ApnID = int(req.Origin.ApnId)
 		device.Network.NasID = nas.ID
 		if err := r.store.UpdateDeviceMetadata(device); err != nil {
