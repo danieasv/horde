@@ -1,0 +1,4 @@
+bin
+*.linux
+*.db
+*.log
