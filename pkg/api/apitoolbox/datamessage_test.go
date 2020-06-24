@@ -92,7 +92,7 @@ func TestBackwardsCompatibleMarshal(t *testing.T) {
 	assert.Equal("manuf-1", n.Device.Firmware.Manufacturer.Value)
 	assert.Equal("version-1", n.Device.Firmware.FirmwareVersion.Value)
 	assert.Equal("model-1", n.Device.Firmware.ModelNumber.Value)
-	assert.Equal(int64(1000), n.Device.Network.AllocatedAt.Value)
+	assert.Equal(float64(1000), n.Device.Network.AllocatedAt.Value)
 	assert.Equal("127.0.0.1", n.Device.Network.AllocatedIp.Value)
 	assert.Equal(int64(2390), n.Device.Network.CellId.Value)
 	assert.Equal("Hello there", string(n.Payload))

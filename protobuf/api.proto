@@ -28,18 +28,12 @@ import "google/api/annotations.proto";
 import "protoc-gen-swagger/options/annotations.proto";
 import "google/protobuf/wrappers.proto";
 
-message ErrorDetails {
-  map<string, string> messages = 1;
-}
+message ErrorDetails { map<string, string> messages = 1; }
 
 // Tag types
-message TagResponse {
-  map<string, string> tags = 1;
-};
+message TagResponse { map<string, string> tags = 1; };
 
-message TagValueResponse {
-  google.protobuf.StringValue value = 1;
-}
+message TagValueResponse { google.protobuf.StringValue value = 1; }
 
 message UpdateTagRequest {
   google.protobuf.StringValue identifier = 1;
@@ -95,7 +89,7 @@ message Collection {
 message NetworkMetadata {
   // The network metadata for devices.
   google.protobuf.StringValue allocated_ip = 1;
-  google.protobuf.Int64Value allocated_at = 2;
+  google.protobuf.DoubleValue allocated_at = 2;
   google.protobuf.Int64Value cell_id = 3;
 };
 
@@ -123,10 +117,10 @@ message FirmwareMetadata {
     TimedOut = 4;
     Error = 5;
     Downloading = 6;
-    Downloaded = 7;    // unused but exists in old data
-    Reverted = 8;      // unused but should be used
-    UpdateFailed = 9;  // unused but exists in old data
-    Completed = 10;    // unused but exists in old data
+    Downloaded = 7;   // unused but exists in old data
+    Reverted = 8;     // unused but should be used
+    UpdateFailed = 9; // unused but exists in old data
+    Completed = 10;   // unused but exists in old data
   };
   google.protobuf.StringValue state = 7;
   google.protobuf.StringValue state_message = 8;
@@ -209,7 +203,7 @@ message OutputDataMessage {
   OutputMessageType type = 1;
   Device device = 2;
   bytes payload = 3;
-  google.protobuf.Int64Value received = 4;
+  google.protobuf.DoubleValue received = 4;
   string transport = 5;
   UDPMetadata udp_meta_data = 6;
   CoAPMetadata coap_meta_data = 7;
@@ -295,9 +289,7 @@ message Member {
   google.protobuf.StringValue auth_type = 12;
 };
 
-message MemberList {
-  repeated Member members = 1;
-};
+message MemberList { repeated Member members = 1; };
 
 message Team {
   google.protobuf.StringValue team_id = 1;
@@ -333,9 +325,7 @@ message ListMessagesRequest {
   google.protobuf.Int64Value until = 5;
 };
 
-message ListMessagesResponse {
-  repeated OutputDataMessage messages = 1;
-};
+message ListMessagesResponse { repeated OutputDataMessage messages = 1; };
 
 // Your user profile.
 // You can change the contents of the user profile via the log in service you
@@ -368,9 +358,7 @@ message DeleteCollectionRequest {
 message ListCollectionRequest {};
 
 // Collection list. The list contains all the collections you have access to.
-message ListCollectionResponse {
-  repeated Collection collections = 1;
-};
+message ListCollectionResponse { repeated Collection collections = 1; };
 
 // Retrieve a single collection
 message RetrieveCollectionRequest {
@@ -392,13 +380,9 @@ message DeviceRequest {
   google.protobuf.StringValue device_id = 2;
 };
 
-message ListDevicesRequest {
-  google.protobuf.StringValue collection_id = 1;
-};
+message ListDevicesRequest { google.protobuf.StringValue collection_id = 1; };
 
-message ListDevicesResponse {
-  repeated Device devices = 1;
-};
+message ListDevicesResponse { repeated Device devices = 1; };
 
 message ClearFirmwareErrorResponse {};
 
@@ -444,16 +428,12 @@ message FirmwareRequest {
   google.protobuf.StringValue image_id = 2;
 };
 
-message ListFirmwareRequest {
-  google.protobuf.StringValue collection_id = 1;
-};
+message ListFirmwareRequest { google.protobuf.StringValue collection_id = 1; };
 
-message ListFirmwareResponse {
-  repeated Firmware images = 1;
-};
+message ListFirmwareResponse { repeated Firmware images = 1; };
 
 message FirmwareUsageResponse {
-  google.protobuf.StringValue image_id = 1;  // Yes it is inconsistent
+  google.protobuf.StringValue image_id = 1; // Yes it is inconsistent
   repeated string targeted = 2;
   repeated string current = 3;
 };
@@ -475,9 +455,7 @@ message ListOutputResponse {
   repeated Output outputs = 2;
 };
 
-message ListOutputRequest {
-  google.protobuf.StringValue collection_id = 1;
-};
+message ListOutputRequest { google.protobuf.StringValue collection_id = 1; };
 
 message OutputRequest {
   google.protobuf.StringValue collection_id = 1;
@@ -485,14 +463,12 @@ message OutputRequest {
 };
 
 message OutputLogEntry {
-  google.protobuf.Int64Value time = 1;
+  google.protobuf.DoubleValue time = 1;
   google.protobuf.StringValue message = 2;
   google.protobuf.Int32Value repeated = 3;
 };
 
-message OutputLogs {
-  repeated OutputLogEntry logs = 1;
-};
+message OutputLogs { repeated OutputLogEntry logs = 1; };
 
 message OutputStatus {
   google.protobuf.StringValue collection_id = 1;
@@ -565,14 +541,10 @@ message UserProfileRequest {};
 // Team resources
 // ###########################################################################
 
-message TeamRequest {
-  google.protobuf.StringValue team_id = 1;
-};
+message TeamRequest { google.protobuf.StringValue team_id = 1; };
 
 message ListTeamRequest {};
-message TeamList {
-  repeated Team teams = 1;
-};
+message TeamList { repeated Team teams = 1; };
 
 message MemberRequest {
   google.protobuf.StringValue team_id = 1;
@@ -581,42 +553,32 @@ message MemberRequest {
 
 message Invite {
   google.protobuf.StringValue code = 1;
-  google.protobuf.Int64Value created_at = 2;
+  google.protobuf.DoubleValue created_at = 2;
 };
 
-message InviteList {
-  repeated Invite invites = 1;
-};
+message InviteList { repeated Invite invites = 1; };
 
 message InviteRequest {
   google.protobuf.StringValue team_id = 1;
   google.protobuf.StringValue code = 2;
 };
 
-message AcceptInviteRequest {
-  google.protobuf.StringValue code = 1;
-};
+message AcceptInviteRequest { google.protobuf.StringValue code = 1; };
 message DeleteInviteResponse {};
 
 // ###########################################################################
 // Token resources
 // ###########################################################################
 
-message DeleteTokenRequest {
-  google.protobuf.StringValue token = 1;
-};
+message DeleteTokenRequest { google.protobuf.StringValue token = 1; };
 
 message DeleteTokenResponse {};
 
 message ListTokenRequest {};
 
-message TokenList {
-  repeated Token tokens = 1;
-};
+message TokenList { repeated Token tokens = 1; };
 
-message TokenRequest {
-  google.protobuf.StringValue token = 1;
-};
+message TokenRequest { google.protobuf.StringValue token = 1; };
 
 // Horde service
 service Horde {
@@ -625,33 +587,33 @@ service Horde {
   // collection
   rpc CreateCollection(Collection) returns (Collection) {
     option (google.api.http) = {
-      post: "/collections"
-      body: "*"
+      post : "/collections"
+      body : "*"
     };
   };
   // Update the collection
   rpc UpdateCollection(Collection) returns (Collection) {
     option (google.api.http) = {
-      patch: "/collections/{collection_id}"
-      body: "*"
+      patch : "/collections/{collection_id}"
+      body : "*"
     };
   };
   // Delete a collection. You must have read and write access to the collection
   rpc DeleteCollection(DeleteCollectionRequest) returns (Collection) {
     option (google.api.http) = {
-      delete: "/collections/{collection_id}"
+      delete : "/collections/{collection_id}"
     };
   };
   // List the collections you have access to.
   rpc ListCollections(ListCollectionRequest) returns (ListCollectionResponse) {
     option (google.api.http) = {
-      get: "/collections"
+      get : "/collections"
     };
   };
   // Retrieve a single collection
   rpc RetrieveCollection(RetrieveCollectionRequest) returns (Collection) {
     option (google.api.http) = {
-      get: "/collections/{collection_id}"
+      get : "/collections/{collection_id}"
     };
   };
 
@@ -659,7 +621,7 @@ service Horde {
   rpc ListCollectionMessages(ListMessagesRequest)
       returns (ListMessagesResponse) {
     option (google.api.http) = {
-      get: "/collections/{collection_id}/data"
+      get : "/collections/{collection_id}/data"
     };
   };
 
@@ -670,8 +632,8 @@ service Horde {
   // single device.
   rpc BroadcastMessage(SendMessageRequest) returns (MultiSendMessageResponse) {
     option (google.api.http) = {
-      post: "/collections/{collection_id}/to"
-      body: "*"
+      post : "/collections/{collection_id}/to"
+      body : "*"
     };
   };
 
@@ -682,7 +644,7 @@ service Horde {
   // List tags on collection.
   rpc ListCollectionTags(TagRequest) returns (TagResponse) {
     option (google.api.http) = {
-      get: "/collections/{collection_id}/tags"
+      get : "/collections/{collection_id}/tags"
     };
   };
 
@@ -691,22 +653,22 @@ service Horde {
   // be removed.
   rpc UpdateCollectionTags(UpdateTagRequest) returns (TagResponse) {
     option (google.api.http) = {
-      patch: "/collections/{collection_id}/tags"
-      body: "*"
+      patch : "/collections/{collection_id}/tags"
+      body : "*"
     };
   };
 
   // Get the value of a particular tag
   rpc GetCollectionTag(TagRequest) returns (TagValueResponse) {
     option (google.api.http) = {
-      get: "/collections/{collection_id}/tags/{name}"
+      get : "/collections/{collection_id}/tags/{name}"
     };
   }
 
   // Delete a tag from the collection
   rpc DeleteCollectionTag(TagRequest) returns (TagValueResponse) {
     option (google.api.http) = {
-      delete: "/collections/{collection_id}/tags/{name}"
+      delete : "/collections/{collection_id}/tags/{name}"
     };
   };
 
@@ -714,8 +676,8 @@ service Horde {
   // removed.
   rpc UpdateCollectionTag(TagRequest) returns (TagValueResponse) {
     option (google.api.http) = {
-      patch: "/collections/{collection_id}/tags/{name}"
-      body: "value"
+      patch : "/collections/{collection_id}/tags/{name}"
+      body : "value"
     };
   };
 
@@ -723,65 +685,65 @@ service Horde {
   // have write access to the collection.
   rpc CreateDevice(Device) returns (Device) {
     option (google.api.http) = {
-      post: "/collections/{collection_id}/devices"
-      body: "*"
+      post : "/collections/{collection_id}/devices"
+      body : "*"
     };
   };
 
   // Retrieve the device
   rpc RetrieveDevice(DeviceRequest) returns (Device) {
     option (google.api.http) = {
-      get: "/collections/{collection_id}/devices/{device_id}"
+      get : "/collections/{collection_id}/devices/{device_id}"
     };
   };
 
   // Update the device
   rpc UpdateDevice(UpdateDeviceRequest) returns (Device) {
     option (google.api.http) = {
-      patch: "/collections/{existing_collection_id}/devices/{device_id}"
-      body: "*"
+      patch : "/collections/{existing_collection_id}/devices/{device_id}"
+      body : "*"
     };
   };
 
   // Remove a device
   rpc DeleteDevice(DeviceRequest) returns (Device) {
     option (google.api.http) = {
-      delete: "/collections/{collection_id}/devices/{device_id}"
+      delete : "/collections/{collection_id}/devices/{device_id}"
     };
   };
 
   // List the devices
   rpc ListDevices(ListDevicesRequest) returns (ListDevicesResponse) {
     option (google.api.http) = {
-      get: "/collections/{collection_id}/devices"
+      get : "/collections/{collection_id}/devices"
     };
   };
 
   // List messages sent by the device
   rpc ListDeviceMessages(ListMessagesRequest) returns (ListMessagesResponse) {
     option (google.api.http) = {
-      get: "/collections/{collection_id}/devices/{device_id}/data"
+      get : "/collections/{collection_id}/devices/{device_id}/data"
     };
   };
 
   // Send a message to the device
   rpc SendMessage(SendMessageRequest) returns (SendMessageResponse) {
     option (google.api.http) = {
-      post: "/collections/{collection_id}/devices/{device_id}/to"
-      body: "*"
+      post : "/collections/{collection_id}/devices/{device_id}/to"
+      body : "*"
     };
   };
 
   rpc ClearFirmwareError(DeviceRequest) returns (ClearFirmwareErrorResponse) {
     option (google.api.http) = {
-      delete: "/collections/{collection_id}/devices/{device_id}/fwerror"
+      delete : "/collections/{collection_id}/devices/{device_id}/fwerror"
     };
   };
 
   // List tags on device.
   rpc ListDeviceTags(TagRequest) returns (TagResponse) {
     option (google.api.http) = {
-      get: "/collections/{collection_id}/devices/{identifier}/tags"
+      get : "/collections/{collection_id}/devices/{identifier}/tags"
     };
   };
 
@@ -790,22 +752,22 @@ service Horde {
   // be removed.
   rpc UpdateDeviceTags(UpdateTagRequest) returns (TagResponse) {
     option (google.api.http) = {
-      patch: "/collections/{collection_id}/devices/{identifier}/tags"
-      body: "*"
+      patch : "/collections/{collection_id}/devices/{identifier}/tags"
+      body : "*"
     };
   };
 
   // Get the value of a particular tag
   rpc GetDeviceTag(TagRequest) returns (TagValueResponse) {
     option (google.api.http) = {
-      get: "/collections/{collection_id}/devices/{identifier}/tags/{name}"
+      get : "/collections/{collection_id}/devices/{identifier}/tags/{name}"
     };
   }
 
   // Delete a tag from its name.
   rpc DeleteDeviceTag(TagRequest) returns (TagValueResponse) {
     option (google.api.http) = {
-      delete: "/collections/{collection_id}/devices/{identifier}/tags/{name}"
+      delete : "/collections/{collection_id}/devices/{identifier}/tags/{name}"
     };
   };
 
@@ -813,8 +775,8 @@ service Horde {
   // removed.
   rpc UpdateDeviceTag(TagRequest) returns (TagValueResponse) {
     option (google.api.http) = {
-      patch: "/collections/{collection_id}/devices/{identifier}/tags/{name}"
-      body: "value"
+      patch : "/collections/{collection_id}/devices/{identifier}/tags/{name}"
+      body : "value"
     };
   };
 
@@ -822,68 +784,68 @@ service Horde {
   // uploader if the POST uses multipart/formdata for the request.
   rpc CreateFirmware(CreateFirmwareRequest) returns (Firmware) {
     option (google.api.http) = {
-      post: "/collections/{collection_id}/firmware"
-      body: "*"
+      post : "/collections/{collection_id}/firmware"
+      body : "*"
     };
   };
 
   rpc RetrieveFirmware(FirmwareRequest) returns (Firmware) {
     option (google.api.http) = {
-      get: "/collections/{collection_id}/firmware/{image_id}"
+      get : "/collections/{collection_id}/firmware/{image_id}"
     };
   };
 
   rpc UpdateFirmware(Firmware) returns (Firmware) {
     option (google.api.http) = {
-      patch: "/collections/{collection_id}/firmware/{image_id}"
-      body: "*"
+      patch : "/collections/{collection_id}/firmware/{image_id}"
+      body : "*"
     };
   };
 
   rpc DeleteFirmware(FirmwareRequest) returns (Firmware) {
     option (google.api.http) = {
-      delete: "/collections/{collection_id}/firmware/{image_id}"
+      delete : "/collections/{collection_id}/firmware/{image_id}"
     };
   };
 
   rpc ListFirmware(ListFirmwareRequest) returns (ListFirmwareResponse) {
     option (google.api.http) = {
-      get: "/collections/{collection_id}/firmware"
+      get : "/collections/{collection_id}/firmware"
     };
   };
 
   rpc FirmwareUsage(FirmwareRequest) returns (FirmwareUsageResponse) {
     option (google.api.http) = {
-      patch: "/collections/{collection_id}/firmware/{image_id}/usage"
+      patch : "/collections/{collection_id}/firmware/{image_id}/usage"
     };
   };
 
   // List tags on firmware image.
   rpc ListFirmwareTags(TagRequest) returns (TagResponse) {
     option (google.api.http) = {
-      get: "/collections/{collection_id}/firmware/{identifier}/tags"
+      get : "/collections/{collection_id}/firmware/{identifier}/tags"
     };
   };
 
   // Update tags on firmware images
   rpc UpdateFirmwareTags(UpdateTagRequest) returns (TagResponse) {
     option (google.api.http) = {
-      patch: "/collections/{collection_id}/firmware/{identifier}/tags"
-      body: "*"
+      patch : "/collections/{collection_id}/firmware/{identifier}/tags"
+      body : "*"
     };
   };
 
   // Get the value of a particular tag
   rpc GetFirmwareTag(TagRequest) returns (TagValueResponse) {
     option (google.api.http) = {
-      get: "/collections/{collection_id}/firmware/{identifier}/tags/{name}"
+      get : "/collections/{collection_id}/firmware/{identifier}/tags/{name}"
     };
   }
 
   // Delete a tag from its name.
   rpc DeleteFirmwareTag(TagRequest) returns (TagValueResponse) {
     option (google.api.http) = {
-      delete: "/collections/{collection_id}/firmware/{identifier}/tags/{name}"
+      delete : "/collections/{collection_id}/firmware/{identifier}/tags/{name}"
     };
   };
 
@@ -891,83 +853,83 @@ service Horde {
   // removed.
   rpc UpdateFirmwareTag(TagRequest) returns (TagValueResponse) {
     option (google.api.http) = {
-      patch: "/collections/{collection_id}/firmware/{identifier}/tags/{name}"
-      body: "value"
+      patch : "/collections/{collection_id}/firmware/{identifier}/tags/{name}"
+      body : "value"
     };
   };
 
   // Create a new output
   rpc CreateOutput(Output) returns (Output) {
     option (google.api.http) = {
-      post: "/collections/{collection_id}/outputs"
-      body: "*"
+      post : "/collections/{collection_id}/outputs"
+      body : "*"
     };
   };
   // Retrieve an output
   rpc RetrieveOutput(OutputRequest) returns (Output) {
     option (google.api.http) = {
-      get: "/collections/{collection_id}/outputs/{output_id}"
+      get : "/collections/{collection_id}/outputs/{output_id}"
     };
   };
   // Update output. Running outputs will be restarted if required. Note that
   // the collection ID can't be changed on an existing output.
   rpc UpdateOutput(Output) returns (Output) {
     option (google.api.http) = {
-      patch: "/collections/{collection_id}/outputs/{output_id}"
-      body: "*"
+      patch : "/collections/{collection_id}/outputs/{output_id}"
+      body : "*"
     };
   };
   // Delete output
   rpc DeleteOutput(OutputRequest) returns (Output) {
     option (google.api.http) = {
-      delete: "/collections/{collection_id}/outputs/{output_id}"
+      delete : "/collections/{collection_id}/outputs/{output_id}"
     };
   };
   // Get a list of outputs
   rpc ListOutputs(ListOutputRequest) returns (ListOutputResponse) {
     option (google.api.http) = {
-      get: "/collections/{collection_id}/outputs"
+      get : "/collections/{collection_id}/outputs"
     };
   };
   // Get logs for output
   rpc Logs(OutputRequest) returns (OutputLogs) {
     option (google.api.http) = {
-      get: "/collections/{collection_id}/outputs/{output_id}/logs"
+      get : "/collections/{collection_id}/outputs/{output_id}/logs"
     };
   };
   // Get output status
   rpc Status(OutputRequest) returns (OutputStatus) {
     option (google.api.http) = {
-      get: "/collections/{collection_id}/outputs/{output_id}/status"
+      get : "/collections/{collection_id}/outputs/{output_id}/status"
     };
   };
 
   // List tags on token.
   rpc ListOutputTags(TagRequest) returns (TagResponse) {
     option (google.api.http) = {
-      get: "/collections/{collection_id}/outputs/{identifier}/tags"
+      get : "/collections/{collection_id}/outputs/{identifier}/tags"
     };
   };
 
   // Update tags on output.
   rpc UpdateOutputTags(UpdateTagRequest) returns (TagResponse) {
     option (google.api.http) = {
-      patch: "/collections/{collection_id}/outputs/{identifier}/tags"
-      body: "*"
+      patch : "/collections/{collection_id}/outputs/{identifier}/tags"
+      body : "*"
     };
   };
 
   // Get the value of a particular tag
   rpc GetOutputTag(TagRequest) returns (TagValueResponse) {
     option (google.api.http) = {
-      get: "/collections/{collection_id}/outputs/{identifier}/tags/{name}"
+      get : "/collections/{collection_id}/outputs/{identifier}/tags/{name}"
     };
   }
 
   // Delete a tag from its name.
   rpc DeleteOutputTag(TagRequest) returns (TagValueResponse) {
     option (google.api.http) = {
-      delete: "/collections/{collection_id}/outputs/{identifier}/tags/{name}"
+      delete : "/collections/{collection_id}/outputs/{identifier}/tags/{name}"
     };
   };
 
@@ -975,15 +937,15 @@ service Horde {
   // removed.
   rpc UpdateOutputTag(TagRequest) returns (TagValueResponse) {
     option (google.api.http) = {
-      patch: "/collections/{collection_id}/outputs/{identifier}/tags/{name}"
-      body: "value"
+      patch : "/collections/{collection_id}/outputs/{identifier}/tags/{name}"
+      body : "value"
     };
   };
 
   // Get system information
   rpc GetSystemInfo(SystemInfoRequest) returns (SystemInfoResponse) {
     option (google.api.http) = {
-      get: "/system"
+      get : "/system"
     };
   };
 
@@ -991,51 +953,51 @@ service Horde {
   // collections.
   rpc DataDump(DataDumpRequest) returns (DataDumpResponse) {
     option (google.api.http) = {
-      post: "/datadump"
-      body: "*"
+      post : "/datadump"
+      body : "*"
     };
   };
 
   // Get the profile of the logged in user.
   rpc GetUserProfile(UserProfileRequest) returns (UserProfile) {
     option (google.api.http) = {
-      get: "/profile"
+      get : "/profile"
     };
   };
   // Create a new team.
   rpc CreateTeam(Team) returns (Team) {
     option (google.api.http) = {
-      post: "/teams"
-      body: "*"
+      post : "/teams"
+      body : "*"
     };
   };
 
   // Retrieve a team
   rpc RetrieveTeam(TeamRequest) returns (Team) {
     option (google.api.http) = {
-      get: "/teams/{team_id}"
+      get : "/teams/{team_id}"
     };
   };
 
   // List the team members.
   rpc RetrieveTeamMembers(TeamRequest) returns (MemberList) {
     option (google.api.http) = {
-      get: "/teams/{team_id}/members"
+      get : "/teams/{team_id}/members"
     };
   };
 
   // Retrieve a member of the team.
   rpc RetrieveMember(MemberRequest) returns (Member) {
     option (google.api.http) = {
-      get: "/teams/{team_id}/members/{user_id}"
+      get : "/teams/{team_id}/members/{user_id}"
     };
   };
 
   // Update member settings. You must be an administrator to do this.
   rpc UpdateMember(Member) returns (Member) {
     option (google.api.http) = {
-      patch: "/teams/{team_id}/members/{user_id}"
-      body: "*"
+      patch : "/teams/{team_id}/members/{user_id}"
+      body : "*"
     };
   };
 
@@ -1043,15 +1005,15 @@ service Horde {
   // can't remove yourself from the team.
   rpc DeleteMember(MemberRequest) returns (Member) {
     option (google.api.http) = {
-      delete: "/teams/{team_id}/members/{user_id}"
+      delete : "/teams/{team_id}/members/{user_id}"
     };
   };
 
   // Update the team. You must be an administrator of the team to edit it.
   rpc UpdateTeam(Team) returns (Team) {
     option (google.api.http) = {
-      patch: "/teams/{team_id}"
-      body: "*"
+      patch : "/teams/{team_id}"
+      body : "*"
     };
   };
 
@@ -1059,36 +1021,36 @@ service Horde {
   // have any members besides you.
   rpc DeleteTeam(TeamRequest) returns (Team) {
     option (google.api.http) = {
-      delete: "/teams/{team_id}"
+      delete : "/teams/{team_id}"
     };
   };
 
   // List all teams that you are a member of.
   rpc ListTeams(ListTeamRequest) returns (TeamList) {
     option (google.api.http) = {
-      get: "/teams"
+      get : "/teams"
     };
   };
 
   // Genereate a new invite for the team
   rpc GenerateInvite(InviteRequest) returns (Invite) {
     option (google.api.http) = {
-      post: "/teams/{team_id}/invites"
-      body: "*"
+      post : "/teams/{team_id}/invites"
+      body : "*"
     };
   };
 
   // List the invites generated for the team.
   rpc ListInvites(TeamRequest) returns (InviteList) {
     option (google.api.http) = {
-      get: "/teams/{team_id}/invites"
+      get : "/teams/{team_id}/invites"
     };
   };
 
   // Read a single invite from the team's set of non-redeemed invites.
   rpc RetrieveInvite(InviteRequest) returns (Invite) {
     option (google.api.http) = {
-      get: "/teams/{team_id}/invites/{code}"
+      get : "/teams/{team_id}/invites/{code}"
     };
   };
 
@@ -1097,8 +1059,8 @@ service Horde {
   // removed from the team's invites and cannot be reused.
   rpc AcceptInvite(AcceptInviteRequest) returns (Team) {
     option (google.api.http) = {
-      post: "/teams/accept"
-      body: "*"
+      post : "/teams/accept"
+      body : "*"
     };
   };
 
@@ -1106,14 +1068,14 @@ service Horde {
   // to perform this action
   rpc DeleteInvite(InviteRequest) returns (DeleteInviteResponse) {
     option (google.api.http) = {
-      delete: "/teams/{team_id}/invites/{code}"
+      delete : "/teams/{team_id}/invites/{code}"
     };
   };
 
   // List tags on team.
   rpc ListTeamTags(TagRequest) returns (TagResponse) {
     option (google.api.http) = {
-      get: "/teams/{identifier}/tags"
+      get : "/teams/{identifier}/tags"
     };
   };
 
@@ -1122,22 +1084,22 @@ service Horde {
   // be removed.
   rpc UpdateTeamTags(UpdateTagRequest) returns (TagResponse) {
     option (google.api.http) = {
-      patch: "/teams/{identifier}/tags"
-      body: "*"
+      patch : "/teams/{identifier}/tags"
+      body : "*"
     };
   };
 
   // Get the value of a particular tag
   rpc GetTeamTag(TagRequest) returns (TagValueResponse) {
     option (google.api.http) = {
-      get: "/teams/{identifier}/tags/{name}"
+      get : "/teams/{identifier}/tags/{name}"
     };
   }
 
   // Delete a tag from the team.
   rpc DeleteTeamTag(TagRequest) returns (TagValueResponse) {
     option (google.api.http) = {
-      delete: "/teams/{identifier}/tags/{name}"
+      delete : "/teams/{identifier}/tags/{name}"
     };
   };
 
@@ -1145,21 +1107,21 @@ service Horde {
   // removed.
   rpc UpdateTeamTag(TagRequest) returns (TagValueResponse) {
     option (google.api.http) = {
-      patch: "/teams/{identifier}/tags/{name}"
-      body: "value"
+      patch : "/teams/{identifier}/tags/{name}"
+      body : "value"
     };
   };
 
   rpc CreateToken(Token) returns (Token) {
     option (google.api.http) = {
-      post: "/tokens"
-      body: "*"
+      post : "/tokens"
+      body : "*"
     };
   };
 
   rpc DeleteToken(DeleteTokenRequest) returns (DeleteTokenResponse) {
     option (google.api.http) = {
-      delete: "/tokens/{token}"
+      delete : "/tokens/{token}"
     };
   };
 
@@ -1169,20 +1131,20 @@ service Horde {
 
   rpc ListTokens(ListTokenRequest) returns (TokenList) {
     option (google.api.http) = {
-      get: "/tokens"
+      get : "/tokens"
     };
   };
 
   rpc RetrieveToken(TokenRequest) returns (Token) {
     option (google.api.http) = {
-      get: "/tokens/{token}"
+      get : "/tokens/{token}"
     };
   };
 
   rpc UpdateToken(Token) returns (Token) {
     option (google.api.http) = {
-      patch: "/tokens/{token}"
-      body: "*"
+      patch : "/tokens/{token}"
+      body : "*"
     };
   };
 
@@ -1200,7 +1162,7 @@ service Horde {
   // List tags on token.
   rpc ListTokenTags(TagRequest) returns (TagResponse) {
     option (google.api.http) = {
-      get: "/tokens/{identifier}/tags"
+      get : "/tokens/{identifier}/tags"
     };
   };
 
@@ -1209,22 +1171,22 @@ service Horde {
   // be removed.
   rpc UpdateTokenTags(UpdateTagRequest) returns (TagResponse) {
     option (google.api.http) = {
-      patch: "/tokens/{identifier}/tags"
-      body: "*"
+      patch : "/tokens/{identifier}/tags"
+      body : "*"
     };
   };
 
   // Get the value of a particular tag
   rpc GetTokenTag(TagRequest) returns (TagValueResponse) {
     option (google.api.http) = {
-      get: "/tokens/{identifier}/tags/{name}"
+      get : "/tokens/{identifier}/tags/{name}"
     };
   }
 
   // Delete a tag from its name.
   rpc DeleteTokenTag(TagRequest) returns (TagValueResponse) {
     option (google.api.http) = {
-      delete: "/tokens/{identifier}/tags/{name}"
+      delete : "/tokens/{identifier}/tags/{name}"
     };
   };
 
@@ -1232,17 +1194,17 @@ service Horde {
   // removed.
   rpc UpdateTokenTag(TagRequest) returns (TagValueResponse) {
     option (google.api.http) = {
-      patch: "/tokens/{identifier}/tags/{name}"
-      body: "value"
+      patch : "/tokens/{identifier}/tags/{name}"
+      body : "value"
     };
   };
 };
 
 // Swagger options
 option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
-  info: { title: "The Horde API";
-description: "Because IoT Gateway is an even worse name." version: "2.0.0";
-contact: {
+  info : {title : "The Horde API";
+description : "Because IoT Gateway is an even worse name." version : "2.0.0";
+contact : {
 name:
   "Exploratory Engineering";
 url:
@@ -1252,11 +1214,11 @@ email:
 };
 }
 ;
-security_definitions: {
-security: {
+security_definitions : {
+security : {
 key:
   "ApiToken";
-value: {
+value : {
 type:
   TYPE_API_KEY;
 in:
@@ -1268,50 +1230,50 @@ description:
 }
 };
 };
-responses: {
+responses : {
 key:
   "400";
-value: {
+value : {
 description:
   "The request has an error.";
 }
 }
-responses: {
+responses : {
 key:
   "404";
-value: {
+value : {
 description:
   "Couldn't find the resource.";
 }
 }
-responses: {
+responses : {
 key:
   "409";
-value: {
+value : {
 description:
   "There's a resource conflict here.";
 }
 }
-responses: {
+responses : {
 key:
   "201";
-value: {
+value : {
 description:
   "It's created.";
 }
 }
-responses: {
+responses : {
 key:
   "401";
-value: {
+value : {
 description:
   "You can't touch this";
 }
 }
-responses: {
+responses : {
 key:
   "500";
-value: {
+value : {
 description:
   "I'm sorry. We are broken";
 }

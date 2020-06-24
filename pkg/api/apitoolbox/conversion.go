@@ -17,6 +17,7 @@ package apitoolbox
 //
 import (
 	"fmt"
+	"math"
 	"strings"
 	"time"
 
@@ -117,7 +118,7 @@ func NewNetworkMetadataFromModel(m model.DeviceNetworkMetadata, fieldMask model.
 	}
 	ret := &apipb.NetworkMetadata{
 		AllocatedIp: &wrappers.StringValue{Value: m.AllocatedIP},
-		AllocatedAt: &wrappers.Int64Value{Value: allocTime},
+		AllocatedAt: &wrappers.DoubleValue{Value: allocTime},
 		CellId:      &wrappers.Int64Value{Value: m.CellID},
 	}
 	if fieldMask.IsSet(model.LocationMask) {
@@ -272,7 +273,7 @@ func NewOutputLogsFromModel(logs []model.OutputLogEntry) []*apipb.OutputLogEntry
 	ret := make([]*apipb.OutputLogEntry, 0)
 	for _, v := range logs {
 		ret = append(ret, &apipb.OutputLogEntry{
-			Time:     &wrappers.Int64Value{Value: timeToMillis(v.Time)},
+			Time:     &wrappers.DoubleValue{Value: timeToMillis(v.Time)},
 			Message:  &wrappers.StringValue{Value: v.Message},
 			Repeated: &wrappers.Int32Value{Value: int32(v.Repeated)},
 		})
@@ -403,10 +404,14 @@ func NewMemberFromModel(teamID model.TeamKey, member model.Member) *apipb.Member
 }
 
 // TimeToMillis converts a time value into milliseconds
-func timeToMillis(t time.Time) int64 {
-	logging.Debug("Time = %d, convert to %d", t.UnixNano(), t.UnixNano()/int64(time.Millisecond))
-	return t.UnixNano() / int64(time.Millisecond)
+func timeToMillis(t time.Time) float64 {
+	return math.Floor(float64(t.UnixNano()) / float64(time.Millisecond))
 }
+
+func nanosToMillis(nanos int64) float64 {
+	return math.Floor(float64(nanos) / float64(time.Millisecond))
+}
+
 func milliToNano(ms int64) int64 {
 	return ms * int64(time.Millisecond)
 }
@@ -432,7 +437,7 @@ func ApplyDataFilter(req *apipb.ListMessagesRequest, dataFilter *datastore.DataF
 func NewInviteFromModel(invite model.Invite) *apipb.Invite {
 	return &apipb.Invite{
 		Code:      &wrappers.StringValue{Value: invite.Code},
-		CreatedAt: &wrappers.Int64Value{Value: timeToMillis(invite.Created)},
+		CreatedAt: &wrappers.DoubleValue{Value: timeToMillis(invite.Created)},
 	}
 }
 
@@ -549,7 +554,7 @@ func NewOutputDataMessageFromModel(msg model.DataMessage, collection model.Colle
 		Type:         apipb.OutputDataMessage_data,
 		Device:       NewDeviceFromModel(msg.Device, collection),
 		Payload:      msg.Payload,
-		Received:     &wrappers.Int64Value{Value: timeToMillis(msg.Received)},
+		Received:     &wrappers.DoubleValue{Value: timeToMillis(msg.Received)},
 		Transport:    transportType,
 		CoapMetaData: coapMetadata,
 		UdpMetaData:  udpMetadata,

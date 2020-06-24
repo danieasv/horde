@@ -25,7 +25,7 @@ require (
 	github.com/prometheus/client_golang v1.6.0
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.6.0
-	github.com/telenordigital/nbiot-go v0.6.0
+	github.com/telenordigital/nbiot-go v0.0.0-20200302150853-aec59ff03970
 	golang.org/x/crypto v0.0.0-20200604202706-70a84ac30bf9
 	golang.org/x/sys v0.0.0-20200602225109-6fdc65e7d980
 	golang.org/x/text v0.3.2 // indirect

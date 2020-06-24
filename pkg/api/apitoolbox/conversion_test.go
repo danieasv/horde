@@ -107,7 +107,7 @@ func TestDeviceConversion(t *testing.T) {
 	assert.Equal(d.Firmware.FirmwareVersion, n.Firmware.FirmwareVersion.Value)
 	assert.Equal("Downloading", n.Firmware.State.Value)
 	assert.Equal(d.Firmware.StateMessage, n.Firmware.StateMessage.Value)
-	assert.Equal(d.Network.AllocatedAt.UnixNano()/int64(time.Millisecond), n.Network.AllocatedAt.Value)
+	assert.Equal(nanosToMillis(d.Network.AllocatedAt.UnixNano()), n.Network.AllocatedAt.Value)
 	assert.Equal(d.Network.AllocatedIP, n.Network.AllocatedIp.Value)
 	assert.Equal(d.Network.CellID, n.Network.CellId.Value)
 
@@ -285,7 +285,7 @@ func TestInviteConversion(t *testing.T) {
 	assert.NoError(err)
 	i := NewInviteFromModel(invite)
 	assert.Equal(invite.Code, i.Code.Value)
-	assert.Equal(invite.Created.UnixNano()/int64(time.Millisecond), i.CreatedAt.Value)
+	assert.Equal(timeToMillis(invite.Created), i.CreatedAt.Value)
 
 }
 func TestUserConversion(t *testing.T) {
